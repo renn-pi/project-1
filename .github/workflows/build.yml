@@ -10,6 +10,12 @@ jobs:
     steps:
       - name: Checkout repository
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Clean up Git config
+        run: |
+          git config --global --unset-all http.https://github.com/.extraheader || true
 
   #    used to cache dependencies with a timeout
       - name: Get Date
