@@ -1,22 +1,22 @@
 name: CI
-on:
-  push:
-    branches: [ main ]
+
+on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        persist-credentials: false
 
-      - name: Clean up Git config
-        run: |
-          git config --global --unset-all http.https://github.com/.extraheader || true
+    - name: Clean up Git config
+      run: |
+        git config --global --unset-all http.https://github.com/.extraheader || true
 
+    # Add other steps here
   #    used to cache dependencies with a timeout
       - name: Get Date
         id: get-date
