@@ -12,16 +12,17 @@ jobs:
 
       - name: Clean Build Directory
         run: |
-          rm -rf .buildozer
+          rm -rf .buildozer  # Clean previous builds
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'  # Specify your Python version here
+          python-version: '3.9'  # Use a valid available Python version
 
-      - name: Install Buildozer
+      - name: Install Dependencies
         run: |
           pip install buildozer
+          pip install cython  # Install Cython
 
       - name: Build Android App
         run: |
