@@ -24,6 +24,13 @@ jobs:
           pip install buildozer
           pip install cython  # Install Cython
 
+      - name: Cache Android NDK
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.buildozer/android/platform/android-ndk*
+          key: ${{ runner.os }}-ndk-${{ hashFiles('**/buildozer.spec') }}
+
       - name: Build Android App
         run: |
           buildozer android debug
