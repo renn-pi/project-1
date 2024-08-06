@@ -37,7 +37,7 @@ version.filename = main.py
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,kivymd
+requirements = python3==3.7.3,hostpython3==3.7.3,kivy,kivymd,pillow
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
