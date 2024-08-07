@@ -1,36 +1,42 @@
-name: Build KivyMD App
-
-on: [push]
+name: CI
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Clean Build Directory
+#      used to cache dependencies with a timeout
+      - name: Get Date
+        id: get-date
         run: |
-          rm -rf .buildozer  # Clean previous builds
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'  # Use a valid available Python version
-
-      - name: Install Dependencies
-        run: |
-          pip install buildozer
-          pip install cython  # Install Cython
-
-      - name: Cache Android NDK
+      - name: Cache Buildozer global directory
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.buildozer/android/platform/android-ndk*
-          key: ${{ runner.os }}-ndk-${{ hashFiles('**/buildozer.spec') }}
+          path: .buildozer_global
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
 
-      - name: Build Android App
-        run: |
-          buildozer android debug
+      - uses: actions/cache@v2
+        with:
+          path: .buildozer
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: ${{ steps.buildozer.outputs.filename }}
